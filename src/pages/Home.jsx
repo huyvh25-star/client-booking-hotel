@@ -1,37 +1,54 @@
 import { MapPin, Calendar, Search, Star } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
-import { Building2, Users, CircleDollarSign } from "lucide-react";
+import { Building2, Users, CircleDollarSign, Hotel } from "lucide-react";
+import hotelsApi from "../api/hotelApi";
+import { useEffect, useState } from "react";
 export default function Home() {
+  const [hotels, setHotels] = useState([]);
+
+  // fetch hotels
+  const fetchHotels = async () => {
+    try {
+      const rest = await hotelsApi.getAll({ limit: 3 });
+      console.log("rest  :", rest);
+      setHotels(rest.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    fetchHotels();
+  }, []);
   const handleSearch = () => {
     toast.success("Đang tìm khách sạn phù hợp ✈️");
   };
-  const hotels = [
-    {
-      id: 1,
-      name: "The Grand Resort",
-      city: "Đà Nẵng",
-      img: "https://images.unsplash.com/photo-1590490359854-dfba19688d70?auto=format&fit=crop&w=1200&q=80",
-      rating: 4.8,
-      price: 1450000,
-    },
-    {
-      id: 2,
-      name: "Sunrise Hotel",
-      city: "Nha Trang",
-      img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
-      rating: 4.5,
-      price: 890000,
-    },
-    {
-      id: 3,
-      name: "Ocean View Villas",
-      city: "Phú Quốc",
-      img: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1000&q=60",
-      rating: 4.9,
-      price: 2350000,
-    },
-  ];
+  // const hotels = [
+  //   {
+  //     id: 1,
+  //     name: "The Grand Resort",
+  //     city: "Đà Nẵng",
+  //     img: "https://images.unsplash.com/photo-1590490359854-dfba19688d70?auto=format&fit=crop&w=1200&q=80",
+  //     rating: 4.8,
+  //     price: 1450000,
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Sunrise Hotel",
+  //     city: "Nha Trang",
+  //     img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+  //     rating: 4.5,
+  //     price: 890000,
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Ocean View Villas",
+  //     city: "Phú Quốc",
+  //     img: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1000&q=60",
+  //     rating: 4.9,
+  //     price: 2350000,
+  //   },
+  // ];
 
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
@@ -77,7 +94,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* phần thêm */}
       {/* 🏨 About Section */}
       <section className="max-w-6xl  mt-8 mx-auto px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         {/* Image */}
@@ -169,24 +185,18 @@ export default function Home() {
 
               {/* Nội dung thông tin */}
               <div className="p-6 space-y-3">
-                <div className="flex justify-between items-start">
+                <div className="flex justify-center items-center">
+                  <Hotel />
                   <h3 className="text-lg font-bold text-gray-800">
                     {hotel.name}
                   </h3>
                 </div>
                 <div className="flex flex-col justify-between  md:flex-row">
                   <p className="flex items-center gap-1 text-gray-500 text-sm">
-                    <MapPin className="w-4 h-4 text-blue-500" /> {hotel.city}
+                    <MapPin className="w-4 h-4 text-blue-500" /> {hotel.address}
                   </p>
-                  <span className="text-blue-600 font-semibold text-sm flex  items-center justify-start">
-                    <CircleDollarSign className="w-4 h-4 text-blue-500" />
-                    {hotel.price.toLocaleString()} đ/đêm
-                  </span>
-                </div>
-                {/* Nút xem nhanh */}
-                <div className="flex justify-end">
                   <Link
-                    to={`/hotel/${hotel.id}`}
+                    to={`/hotel/${hotel._id}`}
                     className="btn btn-primary btn-sm text-white shadow-md"
                   >
                     Xem chi tiết
