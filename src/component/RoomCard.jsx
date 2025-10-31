@@ -5,7 +5,13 @@ import { DollarSign } from "lucide-react";
 function RoomCard({ room, images = [], hotelId }) {
   const [current, setCurrent] = useState(0);
   const total = images.length;
-
+  const formatDescription = (text) => {
+    if (!text) return [];
+    return text
+      .split(",") // tách theo dấu phẩy
+      .map((item) => item.trim()) // xóa khoảng trắng dư
+      .filter((item) => item.length > 0); // bỏ phần rỗng
+  };
   const next = (e) => {
     e.stopPropagation();
     if (total > 0) setCurrent((c) => (c + 1) % total);
@@ -70,12 +76,17 @@ function RoomCard({ room, images = [], hotelId }) {
         </h4>
         <p className="flex items-center gap-1 text-gray-600">
           <DollarSign size={16} className="text-yellow-500" />
-          {room.price.toLocaleString()}đ / đêm
+          {room.price.toLocaleString()}/ đêm
         </p>
         <p className="text-gray-500 text-sm">
           Số người tối đa: {room.capacity}
         </p>
 
+        <ul className="text-sm text-gray-600 list-disc list-inside space-y-1">
+          {formatDescription(room.description).map((desc, idx) => (
+            <li key={idx}>{desc}</li>
+          ))}
+        </ul>
         <div className="flex justify-end mt-3">
           <Link
             to={`/hotel/${hotelId}/${room._id}`}

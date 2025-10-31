@@ -1,11 +1,5 @@
-import { useParams, Link } from "react-router-dom";
-import {
-  MapPin,
-  Star,
-  DollarSign,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { useParams } from "react-router-dom";
+import { MapPin, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import hotelsApi from "../api/hotelApi";
 import roomApi from "../api/roomApi";
@@ -15,9 +9,9 @@ export default function HotelDetail() {
   const { hotel_id } = useParams();
   const [hotel, setHotel] = useState(null);
   const [rooms, setRooms] = useState([]);
-  const [imgs, setImgs] = useState({}); // { roomId: [img1, img2, ...] }
+  const [imgs, setImgs] = useState({});
+  const [loadingRooms, setLoadingRooms] = useState(true);
 
-  // Fetch hotel info
   const fetchHotel = async () => {
     try {
       const res = await hotelsApi.getById(hotel_id);
@@ -27,23 +21,23 @@ export default function HotelDetail() {
     }
   };
 
-  // Fetch all rooms of the hotel
   const fetchRooms = async () => {
     try {
+      setLoadingRooms(true);
       const res = await roomApi.getAll(hotel_id);
-      setRooms(res.data);
-      console.log(res.data);
-      // Gọi song song lấy ảnh cho từng room
-      res.data.forEach(async (room) => {
+      setRooms(res.data || []);
+      res.data?.forEach(async (room) => {
         try {
           const imgRes = await roomApi.getImages(room._id);
           setImgs((prev) => ({ ...prev, [room._id]: imgRes.data || [] }));
         } catch (error) {
-          console.error("Lỗi tải ảnh phòng:", error);
+          setImgs((prev) => ({ ...prev, [room._id]: [] }));
         }
       });
     } catch (error) {
       console.error("Lỗi khi tải danh sách phòng:", error);
+    } finally {
+      setLoadingRooms(false);
     }
   };
 
@@ -52,27 +46,30 @@ export default function HotelDetail() {
     fetchRooms();
   }, [hotel_id]);
 
-  // Render sao
   const renderStars = (rating = 0) => {
     const stars = [];
     const fullStars = Math.floor(rating);
     const hasHalf = rating % 1 >= 0.5;
     const total = 5;
 
-    for (let i = 0; i < fullStars; i++) {
+    for (let i = 0; i < fullStars; i++)
       stars.push(<Star key={i} fill="currentColor" size={18} />);
-    }
     if (hasHalf)
       stars.push(
         <Star key="half" fill="currentColor" size={18} className="opacity-50" />
       );
-    for (let i = stars.length; i < total; i++) {
+    for (let i = stars.length; i < total; i++)
       stars.push(
         <Star key={`empty-${i}`} size={18} className="text-gray-300" />
       );
-    }
     return stars;
   };
+
+  const formatVND = (number) =>
+    new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(number);
 
   if (!hotel)
     return (
@@ -107,20 +104,41 @@ export default function HotelDetail() {
       </p>
 
       {/* Mô tả */}
-      <p className="text-gray-700 mb-8 leading-relaxed">{hotel.description}</p>
+      <div className="text-gray-700 mb-8 leading-relaxed">
+        {hotel.description ? (
+          <ul className="list-disc list-inside space-y-1">
+            {hotel.description.split(",").map((item, idx) => (
+              <li key={idx}>{item.trim()}</li>
+            ))}
+          </ul>
+        ) : (
+          <p>Không có mô tả.</p>
+        )}
+      </div>
 
       {/* Danh sách phòng */}
       <h3 className="text-xl font-semibold mb-4">Danh sách phòng</h3>
-      <div className="grid md:grid-cols-2 gap-6">
-        {rooms.map((room) => (
-          <RoomCard
-            key={room._id}
-            room={room}
-            images={imgs[room._id] || []}
-            hotelId={hotel_id}
-          />
-        ))}
-      </div>
+
+      {loadingRooms ? (
+        <div className="text-center text-gray-500 py-10">
+          Đang tải danh sách phòng...
+        </div>
+      ) : rooms.length === 0 ? (
+        <div className="text-center text-gray-500 py-10">
+          Hiện chưa có phòng nào được đăng.
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 gap-6">
+          {rooms.map((room) => (
+            <RoomCard
+              key={room._id}
+              room={{ ...room, price: formatVND(room.price) }}
+              images={imgs[room._id] || []}
+              hotelId={hotel_id}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

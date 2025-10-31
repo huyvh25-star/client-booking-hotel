@@ -15,13 +15,13 @@ export default function MainLayout() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen   bg-gray-50">
       {/* HEADER */}
       <header className="sticky top-0 bg-white shadow-sm z-50">
         <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-blue-600">
-            BookingApp<span className="text-indigo-500">.</span>
+            Đặt Phòng Nhanh
           </Link>
 
           {/* Menu desktop */}
@@ -48,15 +48,7 @@ export default function MainLayout() {
                 isActive ? "text-blue-600 font-semibold" : "hover:text-blue-500"
               }
             >
-              Tin tức
-            </NavLink>
-            <NavLink
-              to="/contact"
-              className={({ isActive }) =>
-                isActive ? "text-blue-600 font-semibold" : "hover:text-blue-500"
-              }
-            >
-              Liên hệ
+              Đơn đặt phòng
             </NavLink>
           </nav>
 

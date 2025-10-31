@@ -1,0 +1,6 @@
+import axiosClient from "./axiosClient";
+const bannerApi = {
+  getAll: () => axiosClient.get("/banners/"),
+  getById: (id) => axiosClient.get(`/banners/${id}`),
+};
+export default bannerApi;
