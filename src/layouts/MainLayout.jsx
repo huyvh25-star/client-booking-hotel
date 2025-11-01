@@ -43,7 +43,7 @@ export default function MainLayout() {
               Khách sạn
             </NavLink>
             <NavLink
-              to="/news"
+              to="/bill"
               className={({ isActive }) =>
                 isActive ? "text-blue-600 font-semibold" : "hover:text-blue-500"
               }
@@ -121,7 +121,7 @@ export default function MainLayout() {
               Khách sạn
             </NavLink>
             <NavLink
-              to="/news"
+              to="/bill"
               onClick={() => setMenuOpen(false)}
               className="text-gray-700 hover:text-blue-600 font-medium"
             >

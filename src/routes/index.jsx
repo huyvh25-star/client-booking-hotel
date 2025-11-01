@@ -5,7 +5,7 @@ import HotelPage from "../pages/HotelPage";
 import RoomPage from "../pages/RoomPage";
 import BookingPage from "../pages/BookingPage";
 import PrivateRoute from "./PrivateRoute";
-
+import ProfilePage from "../pages/ProfilePage";
 export default [
   {
     path: "/login",
@@ -21,6 +21,7 @@ export default [
     children: [
       { index: true, element: <Home /> },
       { path: "hotel", element: <HotelPage /> },
+      { path: "profile", element: <ProfilePage /> },
       { path: "hotel/:hotel_id", element: <RoomPage /> },
       { path: "booking/:hotel_id/:room_id", element: <BookingPage /> },
     ],
