@@ -6,10 +6,10 @@ import { toast } from "sonner";
 export default function MainLayout() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-  const isLoggedIn = !!localStorage.getItem("userToken");
+  const isLoggedIn = !!localStorage.getItem("user_token");
 
   const handleLogout = () => {
-    localStorage.removeItem("userToken");
+    localStorage.clear(); // Xóa toàn bộ key trong localStorage
     toast.success("Đăng xuất thành công 👋");
     navigate("/login");
   };
@@ -125,14 +125,7 @@ export default function MainLayout() {
               onClick={() => setMenuOpen(false)}
               className="text-gray-700 hover:text-blue-600 font-medium"
             >
-              Tin tức
-            </NavLink>
-            <NavLink
-              to="/contact"
-              onClick={() => setMenuOpen(false)}
-              className="text-gray-700 hover:text-blue-600 font-medium"
-            >
-              Liên hệ
+              Đơn đặt phòng
             </NavLink>
           </nav>
         )}
@@ -146,17 +139,21 @@ export default function MainLayout() {
       {/* FOOTER */}
       <footer className="bg-gray-100 py-6 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-600 text-sm">
-          <p>© {new Date().getFullYear()} BookingApp. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Vũ Hoàng Huy - 0353204860</p>
           <div className="flex gap-6">
-            <Link to="/terms" className="hover:text-blue-600">
-              Điều khoản
-            </Link>
-            <Link to="/privacy" className="hover:text-blue-600">
-              Bảo mật
-            </Link>
-            <Link to="/about" className="hover:text-blue-600">
-              Giới thiệu
-            </Link>
+            <a
+              href="https://www.facebook.com/huyvh31846"
+              className="hover:text-blue-600"
+            >
+              facebook
+            </a>
+            <a
+              href="https://www.facebook.com/huyvh31846"
+              className="hover:text-blue-600"
+            >
+              zalo
+            </a>
+            <span className="hover:text-blue-600">SĐT: 0123-456-789</span>
           </div>
         </div>
       </footer>

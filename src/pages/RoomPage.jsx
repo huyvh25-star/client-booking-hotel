@@ -31,6 +31,7 @@ export default function HotelDetail() {
           const imgRes = await roomApi.getImages(room._id);
           setImgs((prev) => ({ ...prev, [room._id]: imgRes.data || [] }));
         } catch (error) {
+          console.log(error);
           setImgs((prev) => ({ ...prev, [room._id]: [] }));
         }
       });

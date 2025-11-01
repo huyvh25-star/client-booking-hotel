@@ -10,20 +10,20 @@ const axiosClient = axios.create({
 });
 
 // 🧱 INTERCEPTOR: trước khi gửi request
-// axiosClient.interceptors.request.use(
-//   (config) => {
-//     // Lấy token từ localStorage (nếu có)
-//     const token = localStorage.getItem("accessToken");
-//     if (token) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-//   },
-//   (error) => {
-//     // Xử lý lỗi trước khi gửi request
-//     return Promise.reject(error);
-//   }
-// );
+axiosClient.interceptors.request.use(
+  (config) => {
+    // Lấy token từ localStorage (nếu có)
+    const token = localStorage.getItem("user_token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    // Xử lý lỗi trước khi gửi request
+    return Promise.reject(error);
+  }
+);
 
 //🧱 INTERCEPTOR: sau khi nhận response
 axiosClient.interceptors.response.use(

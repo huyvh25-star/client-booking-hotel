@@ -1,51 +1,168 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import {
+  Mail,
+  Lock,
+  User,
+  LogIn,
+  UserPlus,
+  ArrowLeft,
+  KeyRound,
+} from "lucide-react";
+import authApi from "../api/authApi";
 
-export default function Login() {
+export default function AuthForm() {
+  const [mode, setMode] = useState("login"); // "login" | "register" | "forgot"
+  const [user, setUser] = useState({ name: "", email: "", password: "" });
   const navigate = useNavigate();
-  const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const redirect = params.get("redirect") || "/";
-
-  const handleLogin = () => {
-    localStorage.setItem("userToken", "fakeToken123");
-    navigate(redirect, { replace: true });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      let res;
+      if (mode === "login") {
+        res = await authApi.login({
+          email: user.email,
+          password: user.password,
+        });
+        localStorage.setItem("user_token", res.access_token);
+        localStorage.setItem("user_login", JSON.stringify(res.data));
+        toast.success("Đăng nhập thành công!");
+        navigate("/");
+      } else if (mode === "register") {
+        res = await authApi.register(user);
+        toast.success("Đăng ký thành công!");
+        setMode("login");
+      } else {
+        // forgot password (tùy bạn xử lý backend)
+        await authApi.forgotPassword({ email: user.email });
+        toast.success("Vui lòng kiểm tra email để đặt lại mật khẩu!");
+        setMode("login");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Có lỗi xảy ra");
+    }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[70vh]">
-      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-center text-blue-600 mb-6">
-          Đăng nhập tài khoản
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-4">
+      <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md">
+        {/* Title */}
+        <h2 className="text-3xl font-bold text-center text-blue-600 mb-6">
+          {mode === "login"
+            ? "Đăng nhập tài khoản"
+            : mode === "register"
+            ? "Tạo tài khoản mới"
+            : "Quên mật khẩu"}
         </h2>
 
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleLogin();
-          }}
-          className="space-y-4"
-        >
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
-          />
-          <input
-            type="password"
-            placeholder="Mật khẩu"
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 outline-none"
-          />
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {mode === "register" && (
+            <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400 transition">
+              <User className="text-gray-500 mr-2" size={20} />
+              <input
+                type="text"
+                placeholder="Họ và tên"
+                value={user.name}
+                onChange={(e) => setUser({ ...user, name: e.target.value })}
+                className="w-full outline-none"
+                required
+              />
+            </div>
+          )}
+
+          <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400 transition">
+            <Mail className="text-gray-500 mr-2" size={20} />
+            <input
+              type="email"
+              placeholder="Email"
+              value={user.email}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              className="w-full outline-none"
+              required
+            />
+          </div>
+
+          {mode !== "forgot" && (
+            <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-blue-400 transition">
+              <Lock className="text-gray-500 mr-2" size={20} />
+              <input
+                type="password"
+                placeholder="Mật khẩu"
+                value={user.password}
+                onChange={(e) => setUser({ ...user, password: e.target.value })}
+                className="w-full outline-none"
+                required
+              />
+            </div>
+          )}
+
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-medium transition"
+            className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition"
           >
-            Đăng nhập
+            {mode === "login" ? (
+              <>
+                <LogIn size={18} /> Đăng nhập
+              </>
+            ) : mode === "register" ? (
+              <>
+                <UserPlus size={18} /> Đăng ký
+              </>
+            ) : (
+              <>
+                <KeyRound size={18} /> Gửi yêu cầu
+              </>
+            )}
           </button>
         </form>
 
-        <p className="text-center text-gray-500 mt-4 text-sm">
-          (Fake login, không cần nhập gì)
-        </p>
+        {/* Links */}
+        <div className="text-center mt-4 text-sm text-gray-600">
+          {mode === "login" && (
+            <>
+              <button
+                onClick={() => setMode("forgot")}
+                className="text-blue-600 hover:underline"
+              >
+                Quên mật khẩu?
+              </button>
+              <div className="mt-2">
+                Chưa có tài khoản?{" "}
+                <button
+                  onClick={() => setMode("register")}
+                  className="text-blue-600 hover:underline font-medium"
+                >
+                  Đăng ký ngay
+                </button>
+              </div>
+            </>
+          )}
+
+          {mode === "register" && (
+            <div>
+              Đã có tài khoản?{" "}
+              <button
+                onClick={() => setMode("login")}
+                className="text-blue-600 hover:underline font-medium"
+              >
+                Đăng nhập
+              </button>
+            </div>
+          )}
+
+          {mode === "forgot" && (
+            <div>
+              <button
+                onClick={() => setMode("login")}
+                className="flex items-center justify-center gap-1 text-blue-600 hover:underline mt-2 mx-auto"
+              >
+                <ArrowLeft size={16} /> Quay lại đăng nhập
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

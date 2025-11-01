@@ -25,8 +25,10 @@ export default function Home() {
   };
   const fetchBanners = async () => {
     try {
-      const rest = await bannerApi.getAll();
+      const rest = await bannerApi.findAllByStatus();
       setBanners(rest.data);
+      // console.log(rest);
+      rest.data;
       console.log(banners);
     } catch (error) {
       console.log(error);
@@ -58,7 +60,7 @@ export default function Home() {
       </section>
 
       {/* 🏨 About Section */}
-      <section className="max-w-6xl mt-12 mx-auto px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+      <section className="max-w-6xl md:mt-12 mx-auto px-4 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         {/* Image */}
         <div className="relative">
           <img

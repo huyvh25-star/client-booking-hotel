@@ -89,7 +89,7 @@ function RoomCard({ room, images = [], hotelId }) {
         </ul>
         <div className="flex justify-end mt-3">
           <Link
-            to={`/hotel/${hotelId}/${room._id}`}
+            to={`/booking/${hotelId}/${room._id}`}
             className="btn btn-outline btn-primary btn-sm rounded-full px-4"
           >
             Đặt phòng
