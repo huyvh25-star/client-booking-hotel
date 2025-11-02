@@ -9,15 +9,20 @@ import {
   UserPlus,
   ArrowLeft,
   KeyRound,
+  Loader2,
 } from "lucide-react";
 import authApi from "../api/authApi";
 
 export default function AuthForm() {
   const [mode, setMode] = useState("login"); // "login" | "register" | "forgot"
   const [user, setUser] = useState({ name: "", email: "", password: "" });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
     try {
       let res;
       if (mode === "login") {
@@ -25,22 +30,29 @@ export default function AuthForm() {
           email: user.email,
           password: user.password,
         });
-        localStorage.setItem("user_token", res.access_token);
-        localStorage.setItem("user_login", JSON.stringify(res.data));
-        toast.success("Đăng nhập thành công!");
-        navigate("/");
+        if (res.data.role === "admin") {
+          toast.error("bạn không truy cập trang người dùng  được !!");
+          return;
+        } else {
+          localStorage.setItem("user_token", res.access_token);
+          localStorage.setItem("user_login", JSON.stringify(res.data));
+          toast.success("Đăng nhập thành công!");
+          navigate("/");
+        }
       } else if (mode === "register") {
         res = await authApi.register(user);
         toast.success("Đăng ký thành công!");
         setMode("login");
       } else {
-        // forgot password (tùy bạn xử lý backend)
+        // forgot password
         await authApi.forgotPassword({ email: user.email });
-        toast.success("Vui lòng kiểm tra email để đặt lại mật khẩu!");
+        toast.success("Vui lòng kiểm tra email để nhận mật khẩu tạm!");
         setMode("login");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Có lỗi xảy ra");
+      toast.error(error.response?.data?.message || "Có lỗi xảy ra!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -98,11 +110,21 @@ export default function AuthForm() {
             </div>
           )}
 
+          {/* Submit button */}
           <button
             type="submit"
-            className="flex items-center justify-center gap-2 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition"
+            disabled={loading}
+            className={`flex items-center justify-center gap-2 w-full py-2 rounded-lg font-semibold transition ${
+              loading
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700 text-white"
+            }`}
           >
-            {mode === "login" ? (
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin" size={18} /> Đang xử lý...
+              </>
+            ) : mode === "login" ? (
               <>
                 <LogIn size={18} /> Đăng nhập
               </>

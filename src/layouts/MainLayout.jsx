@@ -7,15 +7,16 @@ export default function MainLayout() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
   const isLoggedIn = !!localStorage.getItem("user_token");
+  const user = JSON.parse(localStorage.getItem("user_login") || "null");
 
   const handleLogout = () => {
-    localStorage.clear(); // Xóa toàn bộ key trong localStorage
+    localStorage.clear();
     toast.success("Đăng xuất thành công 👋");
     navigate("/login");
   };
 
   return (
-    <div className="flex flex-col min-h-screen   bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       {/* HEADER */}
       <header className="sticky top-0 bg-white shadow-sm z-50">
         <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
@@ -53,7 +54,30 @@ export default function MainLayout() {
           </nav>
 
           {/* User area */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            {isLoggedIn && user ? (
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-blue-50 rounded-full border border-blue-200">
+                <div className="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-semibold uppercase">
+                  {user.name?.charAt(0) || "U"}
+                </div>
+                <div className="text-sm text-gray-700">
+                  <div className="font-semibold leading-tight">{user.name}</div>
+                  <div className="text-xs text-gray-500 truncate max-w-[140px]">
+                    {user.email}
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            {/* Icon user riêng cho mobile */}
+            {isLoggedIn && user ? (
+              <div className="sm:hidden">
+                <div className="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-semibold uppercase">
+                  {user.name?.charAt(0) || "U"}
+                </div>
+              </div>
+            ) : null}
+
             {isLoggedIn ? (
               <div className="dropdown dropdown-end">
                 <div
