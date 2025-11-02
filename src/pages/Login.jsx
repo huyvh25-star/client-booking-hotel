@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
 import {
   Mail,
@@ -18,6 +18,13 @@ export default function AuthForm() {
   const [user, setUser] = useState({ name: "", email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // ✅ Lấy redirect từ URL
+  const params = new URLSearchParams(location.search);
+  const redirectPath = params.get("redirect")
+    ? decodeURIComponent(params.get("redirect"))
+    : "/";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,21 +37,26 @@ export default function AuthForm() {
           email: user.email,
           password: user.password,
         });
+
         if (res.data.role === "admin") {
-          toast.error("bạn không truy cập trang người dùng  được !!");
+          toast.error("Bạn không thể truy cập trang người dùng!");
           return;
-        } else {
-          localStorage.setItem("user_token", res.access_token);
-          localStorage.setItem("user_login", JSON.stringify(res.data));
-          toast.success("Đăng nhập thành công!");
-          navigate("/");
         }
+
+        // ✅ Lưu token và user info
+        localStorage.setItem("user_token", res.access_token);
+        localStorage.setItem("user_login", JSON.stringify(res.data));
+
+        toast.success("Đăng nhập thành công!");
+
+        // ✅ Nếu có redirect thì quay lại đó, không thì về trang chủ
+        navigate(redirectPath, { replace: true });
       } else if (mode === "register") {
         res = await authApi.register(user);
         toast.success("Đăng ký thành công!");
         setMode("login");
       } else {
-        // forgot password
+        // Quên mật khẩu
         await authApi.forgotPassword({ email: user.email });
         toast.success("Vui lòng kiểm tra email để nhận mật khẩu tạm!");
         setMode("login");

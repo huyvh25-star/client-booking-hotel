@@ -33,7 +33,7 @@ export default function HeroSection({ banners }) {
       {/* Overlay content */}
       <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center px-4">
         <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-4 drop-shadow-lg">
-          Đặt phong ngay siêu nhiều ưu đãi
+          Đặt phòng ngay siêu nhiều ưu đãi
         </h1>
         <p className="text-gray-200 text-lg md:text-xl mb-8 max-w-2xl">
           chuỗi khách sạn của chúng tôi cung cấp các khách sạn giá tốt
