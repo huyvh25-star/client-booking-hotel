@@ -2,7 +2,7 @@ import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { Menu, LogIn, User, LogOut, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-
+import { Facebook, Phone, Mail, Globe, HelpCircle } from "lucide-react";
 export default function MainLayout() {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -159,26 +159,53 @@ export default function MainLayout() {
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 md:px-6 py-8">
         <Outlet />
       </main>
+      {/* footer */}
+      <footer className="bg-gray-50 border-t border-gray-200 py-8 mt-10">
+        <div className="max-w-6xl mx-auto px-6 text-gray-700 text-sm flex flex-col items-center space-y-4">
+          {/* Tiêu đề */}
+          <h3 className="flex items-center gap-2 text-gray-900 font-semibold text-base">
+            <HelpCircle size={18} /> Hỗ trợ khách hàng
+          </h3>
 
-      {/* FOOTER */}
-      <footer className="bg-gray-100 py-6 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-600 text-sm">
-          <p>© {new Date().getFullYear()} Vũ Hoàng Huy - 0353204860</p>
-          <div className="flex gap-6">
-            <a
-              href="https://www.facebook.com/huyvh31846"
-              className="hover:text-blue-600"
-            >
-              facebook
-            </a>
-            <a
-              href="https://www.facebook.com/huyvh31846"
-              className="hover:text-blue-600"
-            >
-              zalo
-            </a>
-            <span className="hover:text-blue-600">SĐT: 0123-456-789</span>
+          {/* Nội dung liên hệ */}
+          <div className="space-y-2 text-center flex justify-around w-full">
+            <p className="flex items-center justify-center gap-2">
+              <Phone size={16} /> Hotline:{" "}
+              <span className="font-medium">0936 269 339</span>
+            </p>
+            <p className="flex items-center justify-center gap-2">
+              <Mail size={16} /> Email:{" "}
+              <a
+                href="mailto:hotro@example.com"
+                className="hover:text-blue-600 transition-colors"
+              >
+                dungvietle720@gmail.com
+              </a>
+            </p>
+            <div className="flex items-center justify-center gap-4 pt-1">
+              <a
+                href="https://web.facebook.com/beouiii777"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+              >
+                <Facebook size={16} /> Facebook
+              </a>
+              <a
+                href="https://zalo.me/0936269339"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+              >
+                <Globe size={16} /> Zalo
+              </a>
+            </div>
           </div>
+        </div>
+
+        {/* Dòng bản quyền */}
+        <div className="text-center text-gray-500 text-xs mt-6 border-t border-gray-200 pt-3">
+          © {new Date().getFullYear()} - Tất cả các quyền được bảo lưu.
         </div>
       </footer>
     </div>
