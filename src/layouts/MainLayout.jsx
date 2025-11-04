@@ -168,7 +168,7 @@ export default function MainLayout() {
           </h3>
 
           {/* Nội dung liên hệ */}
-          <div className="space-y-2 text-center flex justify-around w-full">
+          <div className="space-y-2 text-center flex flex-col md:flex-row justify-around w-full">
             <p className="flex items-center justify-center gap-2">
               <Phone size={16} /> Hotline:{" "}
               <span className="font-medium">0936 269 339</span>

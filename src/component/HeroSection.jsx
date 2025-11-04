@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 // import { toast } from "sonner";
 
 export default function HeroSection({ banners }) {
-  console.log("banner : ", banners);
-
   const [current, setCurrent] = useState(0);
   // Auto slide
   useEffect(() => {

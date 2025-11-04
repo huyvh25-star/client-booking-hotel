@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui";
 * {
-  font-family: "Alan Sans", sans-serif;
-  font-style: normal;
+  font-family: "Oswald", sans-serif;
+  font-optical-sizing: auto;
 }
